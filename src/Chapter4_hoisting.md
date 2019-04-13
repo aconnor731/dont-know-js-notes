@@ -1,5 +1,5 @@
-##Chapter 4: Hoisting
-###The Compiler Strikes Again
+## Chapter 4: Hoisting
+#### The Compiler Strikes Again
 The best way to think about things is that all declarations, both variables and functions,  
 are processed first, before any part of your code is executed.  
 When you see `var a=2`, Javascript thinks of it as two statements: `var a;` and `a = 2`.  
