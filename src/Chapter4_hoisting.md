@@ -8,3 +8,4 @@ statement, the assignment, is left **in place** for the execution phase.
 In other words, **the egg (declaration) comes before the chicken (assignment).**  
 Declaration is "hoisted" to the top and performed before the assignment.  
 
+#### Functions First
