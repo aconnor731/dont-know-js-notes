@@ -111,7 +111,7 @@ for (var i=1; i<=5; i++) {
 }
 ```
 
-This still does not work. Each timeout function callback is indeed closing over its own per-iteration scope created respectively by each IIFE.
+This still does not work. Each timeout function callback is indeed closing over its own per-iteration scope created respectively by each IIFE (Immediately Invoked Function Expression).
 
 It's not enough to have a scope to close over **if that scope is empty**. Our IIFE is just an empty do-nothing scope. It needs *something* in it to be useful to use.
 
@@ -145,4 +145,60 @@ for (var i=1; i<=5; i++) {
 The use of an IIFE inside each iteration created a new scope for each iteration, which gave our timeout function callbacks the opportunity to close over a new scope for each iteration, one which had a variable with the right per-iteration value in it for us to access.
 
 #### Block Scoping Revisited
+
+Chapter 3 showed us the `let` declaration, whcih hijacks a block and declares a variable right there in the block.
+
+**It essentially turns a block into a scope that we can close over**. So, the following code "just works":
+
+```javascript
+for (var i=1; i<=5; i++) {
+  let j = i; // block-scope for closure
+  setTimeout( function timer(){
+      console.log( j );
+    }, j*1000);
+}
+```
+
+`let` also has the behavior in the head of a `for` loop by declaring the variable **for each iteration**. And, it will, helpfully, be initialized at each subsequent iteration with the value from the end of the previous iteration:
+
+```javascript
+for (let i=1; i<=5; i++) {
+  setTimeout( function timer(){
+      console.log( i );
+    }, i*1000);
+}
+```
+
+This is an example of block scoping and closure working hand-in-hand.
+
+### Modules
+
+Other code patterns which leverage the power of closure but which do not on the surface appear to be about callbacks.
+
+Module pattern (aka "Revealing Module"):
+
+```javascript
+function CoolModule() {
+  var something = "cool";
+  var another = [1, 2, 3];
+  
+  function doSomething() {
+    console.log( something );
+  }
+  
+  function doAnother() {
+    console.log( another.join( " ! " ));
+  }
+  
+  return {
+    doSomething: doSomething,
+    doAnother: doAnother
+  };
+}
+
+var foo = CoolModule();
+
+foo.doSomething(); // cool
+foo.doAnother(); // 1 ! 2 ! 3
+```
 
