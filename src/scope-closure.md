@@ -85,3 +85,64 @@ bar(); // 2
 
 ### Now I Can See
 
+### Loops + Closure
+
+```javascript
+for (var i=1; i<=5; i++) {
+  setTimeout( function timer(){
+    console.log( i );
+  }, i*1000 );
+}
+```
+
+This actually prints out `6` 5 times rather than `1..5`.
+
+The way scope works, all 5 of those functions, though they are defined separately in each loop iteration, all **are closed over the same shared global scope**, which has, in fact, only one `i` in it.
+
+Let's try:
+
+```javascript
+for (var i=1; i<=5; i++) {
+  (function(){
+    setTimeout( function timer(){
+      console.log( i );
+    }, i*1000);
+  })();
+}
+```
+
+This still does not work. Each timeout function callback is indeed closing over its own per-iteration scope created respectively by each IIFE.
+
+It's not enough to have a scope to close over **if that scope is empty**. Our IIFE is just an empty do-nothing scope. It needs *something* in it to be useful to use.
+
+It needs its own variable, with a copy of the `i` value at each iteration.
+
+```javascript
+for (var i=1; i<=5; i++) {
+  (function(){
+    var j = i;
+    setTimeout( function timer(){
+      console.log( j );
+    }, j*1000);
+  })();
+}
+```
+
+**This works**.
+
+Slight variation some prefer:
+
+```javascript
+for (var i=1; i<=5; i++) {
+  (function(j){
+    setTimeout( function timer(){
+      console.log( j );
+    }, j*1000);
+  })(i);
+}
+```
+
+The use of an IIFE inside each iteration created a new scope for each iteration, which gave our timeout function callbacks the opportunity to close over a new scope for each iteration, one which had a variable with the right per-iteration value in it for us to access.
+
+#### Block Scoping Revisited
+
